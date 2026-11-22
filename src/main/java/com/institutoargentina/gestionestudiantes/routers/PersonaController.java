@@ -1,7 +1,9 @@
+
 package com.institutoargentina.gestionestudiantes.routers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +23,14 @@ public class PersonaController {
     }
 
     @GetMapping
-    public List<Persona> listar() {
-        return personaService.listar();
+    public ResponseEntity<List<Persona>> listar() {
+        return ResponseEntity.ok(personaService.listar());
     }
 
     @GetMapping("/{id}")
-    public Persona obtenerPorId(@PathVariable Integer id) {
-        return personaService.obtenerPorId(id);
+    public ResponseEntity<Persona> obtenerPorId(
+            @PathVariable Integer id) {
+
+        return ResponseEntity.ok(personaService.obtenerPorId(id));
     }
 }

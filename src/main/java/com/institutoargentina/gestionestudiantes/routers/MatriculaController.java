@@ -1,15 +1,11 @@
+
 package com.institutoargentina.gestionestudiantes.routers;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.institutoargentina.gestionestudiantes.modelo.Matricula;
 import com.institutoargentina.gestionestudiantes.servicio.MatriculaService;
@@ -35,19 +31,32 @@ public class MatriculaController {
     }
 
     @PostMapping
-    public Matricula registrar(@RequestBody Matricula matricula) {
-        return matriculaService.registrar(matricula);
+    public ResponseEntity<Matricula> registrar(
+            @RequestBody Matricula matricula) {
+
+        Matricula creada = matriculaService.registrar(matricula);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 
     @PutMapping("/{id}")
     public Matricula actualizar(
             @PathVariable Integer id,
             @RequestBody Matricula matricula) {
+
         return matriculaService.actualizar(id, matricula);
     }
 
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Integer id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+
         matriculaService.eliminar(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> manejarError(RuntimeException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
