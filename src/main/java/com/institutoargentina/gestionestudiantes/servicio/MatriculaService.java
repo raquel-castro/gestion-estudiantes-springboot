@@ -2,6 +2,7 @@
 package com.institutoargentina.gestionestudiantes.servicio;
 
 import java.util.List;
+import com.institutoargentina.gestionestudiantes.excepciones.MatriculaNoEncontradaException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,9 @@ import com.institutoargentina.gestionestudiantes.dao.AlumnoRepository;
 import com.institutoargentina.gestionestudiantes.dao.CursoRepository;
 
 import com.institutoargentina.gestionestudiantes.modelo.Matricula;
+
+import com.institutoargentina.gestionestudiantes.excepciones.AlumnoNoEncontradoException;
+import com.institutoargentina.gestionestudiantes.excepciones.CursoNoEncontradoException;
 
 @Service
 public class MatriculaService {
@@ -45,21 +49,29 @@ public class MatriculaService {
     public Matricula obtenerPorId(Integer id) {
         return matriculaRepository.findById(id)
                 .orElseThrow(() ->
-                    new RuntimeException("Matrícula no encontrada con ID: " + id));
+                    new MatriculaNoEncontradaException(
+                        "Matrícula no encontrada con ID: " + id
+                    )
+                );
     }
-
     // Validar que existan el alumno y el curso
     private void validarAlumnoYCurso(Matricula matricula) {
 
-        if (matricula.getIdAlumno() == null ||
-                !alumnoRepository.existsById(matricula.getIdAlumno())) {
-            throw new RuntimeException("El alumno no existe");
-        }
+    	if (matricula.getIdAlumno() == null ||
+    		!alumnoRepository.existsById(matricula.getIdAlumno())) {
 
-        if (matricula.getIdCurso() == null ||
-                !cursoRepository.existsById(matricula.getIdCurso())) {
-            throw new RuntimeException("El curso no existe");
-        }
+    		throw new AlumnoNoEncontradoException(
+    		     "Alumno no encontrado con ID: " + matricula.getIdAlumno()
+    		 );
+    		}
+
+    	if (matricula.getIdCurso() == null ||
+    		!cursoRepository.existsById(matricula.getIdCurso())) {
+
+    		 throw new CursoNoEncontradoException(
+    		      "Curso no encontrado con ID: " + matricula.getIdCurso()
+    		    );
+    		}
     }
 
     // Registrar matrícula

@@ -2,12 +2,16 @@
 package com.institutoargentina.gestionestudiantes.servicio;
 
 import java.util.List;
+import com.institutoargentina.gestionestudiantes.excepciones.AlumnoNoEncontradoException;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.institutoargentina.gestionestudiantes.dao.AlumnoRepository;
 import com.institutoargentina.gestionestudiantes.modelo.Alumno;
+
+
 
 @Service
 public class EstudianteService {
@@ -25,7 +29,10 @@ public class EstudianteService {
     public Alumno obtenerPorId(Integer id) {
         return alumnoRepository.findById(id)
                 .orElseThrow(() ->
-                    new RuntimeException("Alumno no encontrado con ID: " + id));
+                    new AlumnoNoEncontradoException(
+                        "Alumno no encontrado con ID: " + id
+                    )
+                );
     }
 
     @Transactional

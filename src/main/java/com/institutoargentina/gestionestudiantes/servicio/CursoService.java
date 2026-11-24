@@ -1,6 +1,7 @@
 package com.institutoargentina.gestionestudiantes.servicio;
 
 import java.util.List;
+import com.institutoargentina.gestionestudiantes.excepciones.CursoNoEncontradoException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,10 @@ public class CursoService {
     public Curso obtenerPorId(Integer id) {
         return cursoRepository.findById(id)
                 .orElseThrow(() ->
-                    new RuntimeException("Curso no encontrado con ID: " + id));
+                    new CursoNoEncontradoException(
+                        "Curso no encontrado con ID: " + id
+                    )
+                );
     }
 
     @Transactional

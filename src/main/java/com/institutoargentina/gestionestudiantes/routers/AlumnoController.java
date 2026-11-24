@@ -76,8 +76,5 @@ public class AlumnoController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> manejarError(RuntimeException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
+    
 }
