@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import com.institutoargentina.gestionestudiantes.modelo.Matricula;
 import com.institutoargentina.gestionestudiantes.servicio.MatriculaService;
 
+import java.time.LocalDate;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 @RequestMapping("/api/matriculas")
 public class MatriculaController {
@@ -30,6 +33,18 @@ public class MatriculaController {
         return matriculaService.obtenerPorId(id);
     }
 
+
+    // Consultar matrículas por alumno
+    @GetMapping("/alumno/{idAlumno}")
+    public ResponseEntity<List<Matricula>> listarPorAlumno(
+            @PathVariable Integer idAlumno) {
+
+        return ResponseEntity.ok(
+                matriculaService.listarPorAlumno(idAlumno)
+        );
+    }
+
+    
     @PostMapping
     public ResponseEntity<Matricula> registrar(
             @RequestBody Matricula matricula) {
@@ -39,6 +54,29 @@ public class MatriculaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 
+
+    // Registrar matrícula mediante parámetros
+    @PostMapping("/registrar")
+    public ResponseEntity<Matricula> registrarConParametros(
+            @RequestParam LocalDate fechaMatricula,
+            @RequestParam String estado,
+            @RequestParam Integer idAlumno,
+            @RequestParam Integer idCurso) {
+
+        Matricula matricula = new Matricula();
+
+        matricula.setFechaMatricula(fechaMatricula);
+        matricula.setEstado(estado);
+        matricula.setIdAlumno(idAlumno);
+        matricula.setIdCurso(idCurso);
+
+        Matricula creada = matriculaService.registrar(matricula);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(creada);
+    }
+
+    
+    
     @PutMapping("/{id}")
     public Matricula actualizar(
             @PathVariable Integer id,

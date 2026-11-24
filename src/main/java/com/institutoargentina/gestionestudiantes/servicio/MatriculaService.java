@@ -33,6 +33,13 @@ public class MatriculaService {
     public List<Matricula> listar() {
         return matriculaRepository.findAll();
     }
+    
+
+    // Listar matrículas de un alumno
+    public List<Matricula> listarPorAlumno(Integer idAlumno) {
+        return matriculaRepository.findByIdAlumno(idAlumno);
+    }
+
 
     // Buscar matrícula por ID
     public Matricula obtenerPorId(Integer id) {
