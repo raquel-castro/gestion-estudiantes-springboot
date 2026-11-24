@@ -2,14 +2,12 @@
 package com.institutoargentina.gestionestudiantes.routers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.institutoargentina.gestionestudiantes.modelo.Persona;
+import com.institutoargentina.gestionestudiantes.schemas.PersonaDTO;
 import com.institutoargentina.gestionestudiantes.servicio.PersonaService;
 
 @RestController
@@ -22,15 +20,25 @@ public class PersonaController {
         this.personaService = personaService;
     }
 
+    // Listar personas mediante DTO
     @GetMapping
-    public ResponseEntity<List<Persona>> listar() {
-        return ResponseEntity.ok(personaService.listar());
+    public ResponseEntity<List<PersonaDTO>> listar() {
+
+        List<PersonaDTO> personas = personaService.listar()
+                .stream()
+                .map(PersonaDTO::fromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(personas);
     }
 
+    // Buscar persona por ID mediante DTO
     @GetMapping("/{id}")
-    public ResponseEntity<Persona> obtenerPorId(
+    public ResponseEntity<PersonaDTO> obtenerPorId(
             @PathVariable Integer id) {
 
-        return ResponseEntity.ok(personaService.obtenerPorId(id));
+        return ResponseEntity.ok(
+                PersonaDTO.fromEntity(personaService.obtenerPorId(id))
+        );
     }
 }
